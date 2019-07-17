@@ -1,0 +1,140 @@
+/*
+ * @NOTE: Prepend a `~` to css file paths that are in your node_modules
+ *        See https://github.com/webpack-contrib/sass-loader#imports
+ */
+@import "../../node_modules/@fortawesome/fontawesome-free/css/all.css";
+
+@font-face {
+  font-family: Montserrat;
+  src: url("../assets/Montserrat-Regular.ttf");
+}
+
+@font-face {
+  font-family: Montserrat;
+  src: url("../assets/Montserrat-Bold.ttf");
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: Montserrat;
+  src: url("../assets/Montserrat-Medium.ttf");
+  font-weight: 500;
+}
+
+html, body {
+  font-family: Montserrat, Arial, sans-serif;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  box-sizing: border-box;
+  color: white;
+  -webkit-app-region: drag;
+  -webkit-user-select: none;
+  background: linear-gradient(to bottom right, #515cc7 0%, #e34bff 100%); /* W3C */
+}
+
+input[type="submit"],
+input[type="reset"],
+input[type="button"],
+input[type="text"],
+button,
+textarea {
+  box-sizing: border-box;
+  -webkit-app-region: no-drag;
+}
+
+div {
+  box-sizing: border-box;
+}
+
+.commands {
+  right: 0;
+  position: absolute;
+  text-align: right;
+  margin-right: 1em;
+}
+
+.in-out-text {
+  font-weight: bold;
+  width: 100%;
+  background: 0;
+  border: 0;
+  resize: none;
+  font-size: 2em;
+  padding: 1em;
+  outline: none !important;
+  border-bottom: white solid 1px;
+  overflow: scroll;
+  white-space: pre;
+  ::-webkit-scrollbar {
+    width: 0px; /* remove scrollbar space */
+    background: transparent; /* optional: just make scrollbar invisible */
+  }
+}
+
+.prediction-buttons {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: stretch;
+}
+
+.prediction-buttons::before, .prediction-buttons::after {
+  content: '';
+  width: 100%;
+  order: 1;
+}
+
+.prediction-button {
+  flex: 1 25%;
+  flex-grow: 0;
+  padding: 0.5em;
+  font-size: 1.5em;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.prediction-select-number {
+  position: relative;
+  top: -5px;
+  left: 5px;
+  font-size: 0.8em;
+}
+
+.prediction-text {
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.prediction-button:hover {
+  background-color: rgba(248, 247, 255, 0.45);
+}
+
+.prediction-button:active {
+  background-color: rgba(94, 94, 97, 0.64);
+}
+
+.prediction-button:hover > .prediction-text {
+  font-weight: bold;
+}
+
+.button {
+  padding: 0.2em;
+  background: 0;
+  border: 0;
+  color: white;
+  font-size: 1.5em;
+  outline: 0;
+}
+
+.button:hover {
+  background-color: rgba(248, 247, 255, 0.45);
+}
+
+.button:active {
+  background-color: rgba(94, 94, 97, 0.64);
+}
+
+
+

@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "lib": [
+      "es6",
+      "dom"
+    ],
+    "target": "es6",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "jsx": "preserve",
+    "types": [
+      "react",
+      "react-dom"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "strictNullChecks": false
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "src",
+    "node_modules/@types/node/globals.d.ts"
+  ]
+}
