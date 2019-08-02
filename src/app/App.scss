@@ -31,6 +31,7 @@ html, body {
   -webkit-app-region: drag;
   -webkit-user-select: none;
   background: linear-gradient(to bottom right, #515cc7 0%, #e34bff 100%); /* W3C */
+  overflow-x: hidden;
 }
 
 input[type="submit"],
@@ -66,10 +67,13 @@ div {
   border-bottom: white solid 1px;
   overflow: scroll;
   white-space: pre;
-  ::-webkit-scrollbar {
-    width: 0px; /* remove scrollbar space */
-    background: transparent; /* optional: just make scrollbar invisible */
-  }
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE 10+ */
+}
+.in-out-text::-webkit-scrollbar {
+  width: 0px; /* remove scrollbar space */
+  background: transparent; /* optional: just make scrollbar invisible */
+  height: 0px;
 }
 
 .prediction-buttons {

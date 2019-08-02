@@ -3,6 +3,10 @@ import Prediction from '../prediction';
 import "./App.scss"
 import SerialPort from 'serialport'
 
+const port5 = new SerialPort('COM5', {
+    baudRate: 9600
+});
+
 export default class App extends Component {
     output;
     speechSynthesis;
@@ -24,6 +28,14 @@ export default class App extends Component {
                 event.preventDefault();
             }
         });
+
+        window.addEventListener("keydown", event => {
+            // ENTER
+            if (event.keyCode === 123) {
+                this.showOnScreen();
+                event.preventDefault();
+            }
+        });
     }
 
     speak() {
@@ -38,18 +50,38 @@ export default class App extends Component {
         this.speechSynthesis.rate = 0.8;
         this.speechSynthesis.text = text;
         window.speechSynthesis.speak(this.speechSynthesis);
+        this.output.current.focus();
     };
 
     showOnScreen() {
-        SerialPort.list().then(
-            ports => ports.forEach(console.log),
-            err => console.error(err)
-        )
+
+        if(!port5.isOpen) {
+            port5.open(function (err) {
+                if (err) {
+                    return console.log('Error opening port: ', err.message)
+                }
+
+                // Because there's no callback to write, write errors will be emitted on the port:
+                port5.write('switch_display', function(err) {
+                    if (err) {
+                        return console.log('Error on write: ', err.message)
+                    }
+                    console.log('display_on sent')
+                });
+            })
+        } else {
+            port5.write('switch_display', function(err) {
+                if (err) {
+                    return console.log('Error on write: ', err.message)
+                }
+                console.log('display_on sent')
+            });
+        }
+
+        this.output.current.focus();
     }
 
     render() {
-
-
         return (
             <Fragment>
 

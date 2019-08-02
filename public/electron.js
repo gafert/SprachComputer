@@ -5,8 +5,10 @@ const BrowserWindow = electron.BrowserWindow;
 
 const path = require('path');
 const isDev = require('electron-is-dev');
+const robot = require("robotjs");
 
 let mainWindow;
+
 
 function createWindow() {
     mainWindow = new BrowserWindow({width: 900, height: 680});
@@ -18,12 +20,13 @@ function createWindow() {
     }
     // mainWindow.webContents.openDevTools();
     mainWindow.on('closed', () => mainWindow = null);
+    mainWindow.setAutoHideMenuBar(true);
 }
 
 app.on('ready', () => {
     createWindow();
 
-    let ret = globalShortcut.register('CommandOrControl+G', () => {
+    let ret = globalShortcut.register('F10', () => {
         if (mainWindow.isMinimized()) {
             mainWindow.show();
             mainWindow.alwaysOnTop = true;
@@ -44,6 +47,23 @@ app.on('ready', () => {
     if (!ret) {
         console.log('registration failed')
     }
+
+    ret = globalShortcut.register('F7', () => {
+        robot.mouseClick();
+    });
+
+    if (!ret) {
+        console.log('registration failed')
+    }
+
+    ret = globalShortcut.register('F9', () => {
+        robot.mouseClick("right")
+    });
+
+    if (!ret) {
+        console.log('registration failed')
+    }
+
 });
 
 app.on('window-all-closed', () => {

@@ -25,6 +25,7 @@ export default class Prediction extends Component<Props> {
     constructor(props) {
         super(props);
         this.predictionary = Predictionary.instance();
+        console.log("Constructor is executing")
 
         // Load new dictionary if there is none
         if (!fs.existsSync(configDir + DICT_DE_FILE)) {
@@ -37,8 +38,13 @@ export default class Prediction extends Component<Props> {
                 rankPosition: 0,
                 addToDictionary: DICT_DE
             });
+
         } else {
             // Load json
+            console.log("File exists, trying to read.")
+            console.log("")
+
+            console.log(fs.readFileSync(configDir + DICT_DE_FILE, "utf8"))
             this.predictionary.loadDictionary(fs.readFileSync(configDir + DICT_DE_FILE, "utf8"), DICT_DE)
         }
 
@@ -58,6 +64,7 @@ export default class Prediction extends Component<Props> {
                 this.props.textfield.current.dispatchEvent(e);
             }
         });
+
     }
 
     /**
@@ -90,15 +97,15 @@ export default class Prediction extends Component<Props> {
     saveDict() {
         let dict = this.predictionary.dictionaryToJSON(DICT_DE);
 
-        fs.writeFile(path.join(configDir, DICT_DE_FILE), dict, 'utf8', (err) => {
-            if (err)
-                return console.log("Could not save dictionary", err);
+        console.log("Tryna save da dictionary",dict);
 
-            console.log("Saved dictionary");
-        })
+        fs.writeFileSync(configDir + DICT_DE_FILE, dict)
+
+
     }
 
     render() {
+        console.log("render is executing")
         this.predictionary.learnFromInput(this.props.text);
         this.state.suggestions = this.predictionary.predict(this.props.text, {maxPredictions: 8});
 
@@ -106,7 +113,7 @@ export default class Prediction extends Component<Props> {
         if (this.saveTimeout != undefined) clearTimeout(this.saveTimeout);
         this.saveTimeout = setTimeout(() => {
             this.saveDict();
-        }, 10000);
+        }, 1000);
 
         return (
             <div className="prediction-buttons" id="button-holder">

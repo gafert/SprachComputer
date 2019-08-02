@@ -32,7 +32,9 @@
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
     "react-scripts": "2.1.5",
-    "serialport": "^7.1.5"
+    "robotjs": "^0.5.1",
+    "serialport": "^7.1.5",
+    "yarn": "^1.17.3"
   },
   "homepage": "./",
   "main": "public/electron.js",
@@ -41,10 +43,11 @@
     "build": "rescripts build",
     "test": "rescripts test",
     "eject": "react-scripts eject",
-    "electron-dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron-dev": "concurrently \"yarn start\" \"wait-on http://localhost:3000 && electron .\"",
     "postinstall": "electron-builder install-app-deps",
     "preelectron-pack": "yarn build",
-    "electron-pack": "build -mw"
+    "electron-pack": "build -w",
+    "rebuild": "npm rebuild --runtime=electron --target=4.0.6 --disturl=https://atom.io/download/atom-shell --abi=57"
   },
   "eslintConfig": {
     "extends": "react-app"
