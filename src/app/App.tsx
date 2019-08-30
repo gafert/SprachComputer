@@ -37,7 +37,10 @@ export default class App extends Component {
 
             // F5 is command
             if (event.keyCode === 116) {
-                this.setState({selectedTextCommand: !this.state.selectedTextCommand});
+                this.setState({
+                    selectedTextCommand: !this.state.selectedTextCommand,
+                    saveTextCommand: false
+                });
                 event.preventDefault();
             }
 
@@ -45,7 +48,7 @@ export default class App extends Component {
             if (event.keyCode === 115) {
                 this.setState({
                     selectedTextCommand: !this.state.selectedTextCommand,
-                    saveTextCommand: !this.state.saveTextCommand
+                    saveTextCommand: !this.state.selectedTextCommand
                 });
                 event.preventDefault();
             }
@@ -55,7 +58,7 @@ export default class App extends Component {
                 event.preventDefault();
                 console.log(this.state);
                 if (this.state.saveTextCommand) {
-                    if(this.output.current.innerText.length === 0) return;
+                    if (this.output.current.innerText.length === 0) return;
                     // Save command
                     const _preDefTexts = this.state.predefinedText;
                     _preDefTexts[event.keyCode - 48 - 1] = this.output.current.innerText;
@@ -104,7 +107,7 @@ export default class App extends Component {
     }
 
     loadPredefinedTexts(): Array<string> {
-        if(fs.existsSync(configDir + PREDEFINED_TEXTS_FILE)) {
+        if (fs.existsSync(configDir + PREDEFINED_TEXTS_FILE)) {
             const data = fs.readFileSync(configDir + PREDEFINED_TEXTS_FILE);
             console.log(data);
             return JSON.parse(data as any);
