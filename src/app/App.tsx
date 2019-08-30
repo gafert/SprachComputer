@@ -1,19 +1,15 @@
 import React, {Component, Fragment} from 'react';
 import Prediction from '../prediction';
 import "./App.scss"
-import SerialPort from 'serialport'
-
-const port5 = new SerialPort('COM5', {
-    baudRate: 9600
-});
+import {ipcRenderer} from 'electron';
 
 export default class App extends Component {
     output;
     speechSynthesis;
 
-
     state = {
-        text: ""
+        text: "",
+        isScreenOn: true
     };
 
     constructor(props) {
@@ -29,18 +25,13 @@ export default class App extends Component {
             }
         });
 
-        window.addEventListener("keydown", event => {
-            // ENTER
-            if (event.keyCode === 123) {
-                this.showOnScreen();
-                event.preventDefault();
-            }
+        ipcRenderer.on('switch-successful', () => {
+            this.setState({isScreenOn: !this.state.isScreenOn})
         });
     }
 
     speak() {
         const text = this.output.current.innerText;
-        console.log(text);
 
         if (text === undefined || text === null) {
             return;
@@ -53,45 +44,22 @@ export default class App extends Component {
         this.output.current.focus();
     };
 
-    showOnScreen() {
-
-        if(!port5.isOpen) {
-            port5.open(function (err) {
-                if (err) {
-                    return console.log('Error opening port: ', err.message)
-                }
-
-                // Because there's no callback to write, write errors will be emitted on the port:
-                port5.write('switch_display', function(err) {
-                    if (err) {
-                        return console.log('Error on write: ', err.message)
-                    }
-                    console.log('display_on sent')
-                });
-            })
-        } else {
-            port5.write('switch_display', function(err) {
-                if (err) {
-                    return console.log('Error on write: ', err.message)
-                }
-                console.log('display_on sent')
-            });
-        }
-
-        this.output.current.focus();
-    }
 
     render() {
         return (
             <Fragment>
-
-                <div style={{margin: "0.5em"}}>Nummern: Auswahl, Enter: Sprachausgabe, Tab: Löschen</div>
+                <div style={{margin: "0.5em"}}>Nummern: Auswahl, Enter: Sprachausgabe, Tab: Löschen<br/>F10: Öffnen, F6:
+                    Display, F7: Links Klick, F9: Rechts Klick
+                </div>
 
                 <div className="commands">
                     <button type="button" onClick={() => {
-                        this.showOnScreen();
-                    }} className="button">
-                        <i className="fas fa-desktop"/>
+                        ipcRenderer.send('switch-screen');
+                        this.output.current.focus();
+                    }
+                    } className="button">
+                        {this.state.isScreenOn && <i className="fas fa-tablet"/>}
+                        {!this.state.isScreenOn && <i className="fas fa-tablet-alt"/>}
                     </button>
                     <button type="button" onClick={() => {
                         this.speak();
@@ -101,12 +69,41 @@ export default class App extends Component {
 
                 </div>
 
-
                 <div
                     // @ts-ignore
-                    tabIndex="0" className="in-out-text" id="in-out-text" ref={this.output} onInput={(e) => this.setState({text: e.target.innerText})} contentEditable="true"/>
+                    tabIndex="0" className="in-out-text" id="in-out-text" ref={this.output}
+                    onInput={(e) => this.setState({text: e.currentTarget.innerText})} contentEditable={true}/>
 
                 <Prediction text={this.state.text} textfield={this.output}/>
+
+                <div>
+                    <table className="predefined-text-table">
+                        <tr className="predefined-text">
+                            <td className="predefined-text-number">1</td>
+                            <td>
+                                Nein
+                            </td>
+                        </tr>
+                        <tr className="predefined-text">
+                            <td className="predefined-text-number">2</td>
+                            <td>
+                                Ja
+                            </td>
+                        </tr>
+                        <tr className="predefined-text">
+                            <td className="predefined-text-number">3</td>
+                            <td>
+                                Stop!
+                            </td>
+                        </tr>
+                        <tr className="predefined-text">
+                            <td className="predefined-text-number">4</td>
+                            <td>
+                                Das finde ich gut!
+                            </td>
+                        </tr>
+                    </table>
+                </div>
 
             </Fragment>
         );

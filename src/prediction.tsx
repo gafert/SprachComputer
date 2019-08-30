@@ -1,6 +1,5 @@
-import React, {Component, Ref, RefObject} from 'react';
+import React, {Component, RefObject} from 'react';
 import * as fs from 'fs';
-import * as path from 'path';
 import words_de from './words_de';
 
 const electron = require('electron');
@@ -25,7 +24,6 @@ export default class Prediction extends Component<Props> {
     constructor(props) {
         super(props);
         this.predictionary = Predictionary.instance();
-        console.log("Constructor is executing")
 
         // Load new dictionary if there is none
         if (!fs.existsSync(configDir + DICT_DE_FILE)) {
@@ -41,10 +39,8 @@ export default class Prediction extends Component<Props> {
 
         } else {
             // Load json
-            console.log("File exists, trying to read.")
-            console.log("")
-
-            console.log(fs.readFileSync(configDir + DICT_DE_FILE, "utf8"))
+            console.log("File exists, trying to read.");
+            console.log(fs.readFileSync(configDir + DICT_DE_FILE, "utf8"));
             this.predictionary.loadDictionary(fs.readFileSync(configDir + DICT_DE_FILE, "utf8"), DICT_DE)
         }
 
@@ -64,7 +60,6 @@ export default class Prediction extends Component<Props> {
                 this.props.textfield.current.dispatchEvent(e);
             }
         });
-
     }
 
     /**
@@ -96,16 +91,11 @@ export default class Prediction extends Component<Props> {
      */
     saveDict() {
         let dict = this.predictionary.dictionaryToJSON(DICT_DE);
-
-        console.log("Tryna save da dictionary",dict);
-
+        console.log("Saving dictionary");
         fs.writeFileSync(configDir + DICT_DE_FILE, dict)
-
-
     }
 
     render() {
-        console.log("render is executing")
         this.predictionary.learnFromInput(this.props.text);
         this.state.suggestions = this.predictionary.predict(this.props.text, {maxPredictions: 8});
 

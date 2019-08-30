@@ -28,7 +28,7 @@
     "electron-is-dev": "^1.0.1",
     "fontawesome": "^5.6.3",
     "node-sass": "^4.12.0",
-    "predictionary": "^1.4.3",
+    "predictionary": "^1.4.4",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
     "react-scripts": "2.1.5",
@@ -47,7 +47,7 @@
     "postinstall": "electron-builder install-app-deps",
     "preelectron-pack": "yarn build",
     "electron-pack": "build -w",
-    "rebuild": "npm rebuild --runtime=electron --target=4.0.6 --disturl=https://atom.io/download/atom-shell --abi=57"
+    "rebuild": "npm rebuild --runtime=electron --target=4.2.0 --disturl=https://atom.io/download/atom-shell --abi=64"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -63,7 +63,7 @@
     "@rescripts/cli": "^0.0.10",
     "@rescripts/rescript-env": "^0.0.5",
     "concurrently": "^4.1.0",
-    "electron": "^4.0.6",
+    "electron": "^4.2.0",
     "electron-builder": "^20.38.5",
     "typescript": "^3.5.3",
     "wait-on": "^3.2.0"

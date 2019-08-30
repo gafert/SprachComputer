@@ -140,5 +140,33 @@ div {
   background-color: rgba(94, 94, 97, 0.64);
 }
 
+.predefined-text-table {
+  border-spacing: 0;
+  width: 100%;
+}
+
+.predefined-text-number {
+  padding: 0.5em 1em;
+  width: 0.1em;
+}
+
+.predefined-text {
+  font-size: 1.5em;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.predefined-text:hover {
+  background-color: rgba(248, 247, 255, 0.45);
+}
+
+.predefined-text:active {
+  background-color: rgba(94, 94, 97, 0.64);
+}
+
+.predefined-text:hover > td {
+  font-weight: bold;
+}
+
 
 
