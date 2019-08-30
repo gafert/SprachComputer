@@ -116,6 +116,15 @@ app.on('ready', () => {
         console.log('F6 registration failed')
     }
 
+    // Display on off
+    ret = globalShortcut.register('F1', () => {
+        mainWindow.setFullScreen(!mainWindow.isFullScreen());
+    });
+
+    if (!ret) {
+        console.log('F1 registration failed')
+    }
+
     //
     // Init Arduino
     //

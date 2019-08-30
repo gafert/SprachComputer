@@ -1,6 +1,7 @@
 import React, {Component, RefObject} from 'react';
 import * as fs from 'fs';
 import words_de from './words_de';
+import {insertTextInHtmlRefAndSetCarret} from "./app/Util";
 
 const electron = require('electron');
 const configDir = (electron.app || electron.remote.app).getPath('home');
@@ -19,7 +20,9 @@ export default class Prediction extends Component<Props> {
     predictionary;
     saveTimeout;
 
-    state = {suggestions: []};
+    state = {
+        suggestions: [],
+    };
 
     constructor(props) {
         super(props);
@@ -28,7 +31,9 @@ export default class Prediction extends Component<Props> {
         // Load new dictionary if there is none
         if (!fs.existsSync(configDir + DICT_DE_FILE)) {
             // Load new dictionary
-            setTimeout(function() { alert("Neues Wörterbuch wird in " + configDir + " generiert")}, 1);
+            setTimeout(function () {
+                alert("Neues Wörterbuch wird in " + configDir + " generiert")
+            }, 1);
             this.predictionary.parseWords(words_de, {
                 elementSeparator: '\n',
                 rankSeparator: ' ',
@@ -45,51 +50,33 @@ export default class Prediction extends Component<Props> {
         }
 
         window.addEventListener("keydown", event => {
-            // 1 - 8 to select predictions
-            if (event.keyCode - 48 >= 1 && event.keyCode - 48 <= this.state.suggestions.length) {
-                event.preventDefault();
-                this.select(this.state.suggestions[event.keyCode - 48 - 1])
-            }
 
-            // Tab remove all text
-            if (event.keyCode === 9) {
-                event.preventDefault();
-                this.props.textfield.current.innerHTML = "";
-                // Call that the input changed so it rerenders the predictions
-                const e = new Event('input', {bubbles: true});
-                this.props.textfield.current.dispatchEvent(e);
-            }
         });
+    }
+
+    /**
+     * Select 1-8 prediction
+     * @param i Number of the prediciton
+     */
+    public selectPrediction(i: number) {
+        this.select(this.state.suggestions[i - 1])
     }
 
     /**
      * Put a word into the textfield
      * @param word
      */
-    select(word) {
-        this.props.textfield.current.innerHTML = this.predictionary.applyPrediction(this.props.textfield.current.innerHTML, word);
-
-        // More the caret of the input div to the last position
-        const ele = this.props.textfield.current;
-        const rng = document.createRange();
-        const sel = window.getSelection();
-        rng.setStart(ele.childNodes[0], this.props.textfield.current.innerHTML.length);
-        rng.collapse(true);
-        sel.removeAllRanges();
-        sel.addRange(rng);
-        ele.focus();
-
-        // Call that the input changed so it rerenders the predictions
-        const event = new Event('input', {bubbles: true});
-        ele.dispatchEvent(event);
-
+    private select(word) {
+        if (word === undefined || word === null) return;
+        insertTextInHtmlRefAndSetCarret(this.props.textfield,
+            this.predictionary.applyPrediction(this.props.textfield.current.innerHTML, word));
         this.setState({suggestions: this.predictionary.predict(this.props.textfield.current.innerHTML)});
     }
 
     /**
      * Save the loaded dictionary to a local file
      */
-    saveDict() {
+    private saveDict() {
         let dict = this.predictionary.dictionaryToJSON(DICT_DE);
         console.log("Saving dictionary");
         fs.writeFileSync(configDir + DICT_DE_FILE, dict)
