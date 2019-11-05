@@ -1,68 +1,20 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Sprachcomputer
 
-## Available Scripts
+This program was part of [UNIKATE 2019](https://www.behindertenrat.at/2019/10/unikate-per-ideenwettbewerb-barrieren-beseitigen/). It is a simple GUI with word prediction.
 
-In the project directory, you can run:
+It uses the predictionary libary by klues [https://github.com/asterics/predictionary](https://github.com/asterics/predictionary) for the word prediction.
 
-### `npm start`
+## Development
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+This is an electron app with integrated react. 
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+To start the development use `npm run electron-dev`
 
-### `npm test`
+To pack everything into an installable .exe use `npm run electron-pack`. Mac builds are also possible if the package.json is changed.
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+As is uses alternate input methods and serial, robotjs and serialport packages are used. These require a specific node version. If the node Version is changed the package.json needs to be changed according to the new version.
 
-### `npm run build`
+## Running
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+If the progam is started it will generate a dictionary file in the users home directory. This files saves all the words and how they are placed in sentences. A german dictionary is used as a start. This is saved in the code itself and cannot be changed during runtime (altough predictionary can do that). If the file is deleted it will be regenerated. 
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
