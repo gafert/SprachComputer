@@ -2,9 +2,10 @@ import React, {Component, Fragment, Ref, RefObject} from 'react';
 import Prediction from '../prediction';
 import "./App.scss"
 import {ipcRenderer} from 'electron';
-import {insertTextInHtmlRefAndSetCarret} from "./Util";
 import * as fs from "fs";
 import * as electron from "electron";
+import {insertTextInHtml} from "./Util";
+import fitTextarea from "fit-textarea";
 
 const configDir = (electron.app || electron.remote.app).getPath('home');
 const PREDEFINED_TEXTS_FILE = '/predefined_texts.json';
@@ -12,7 +13,7 @@ const PREDEFINED_TEXTS_FILE = '/predefined_texts.json';
 export default class App extends Component {
     speechSynthesis: SpeechSynthesisUtterance;
     prediction: RefObject<Prediction>; // Prediction Class which shows the predictions and changes text
-    output: RefObject<HTMLDivElement>; // Input/Output Element
+    output: RefObject<HTMLTextAreaElement>; // Input/Output Element
 
     state = {
         text: "",
@@ -29,23 +30,26 @@ export default class App extends Component {
         this.speechSynthesis = new SpeechSynthesisUtterance();
 
         window.addEventListener("keydown", event => {
-            // Enter is speak
-            if (event.keyCode === 13) {
-                this.speak();
-                event.preventDefault();
+            if (event.key === "Enter") {
+                // Enter with ctrl is speak
+                if (event.ctrlKey) {
+                    event.preventDefault();
+                    this.speak();
+                }
             }
 
             // F5 is command
-            if (event.keyCode === 116) {
+            if (event.key === "F5") {
+                event.preventDefault();
+
                 this.setState({
                     selectedTextCommand: !this.state.selectedTextCommand,
                     saveTextCommand: false
                 });
-                event.preventDefault();
             }
 
             // F4 is save text
-            if (event.keyCode === 115) {
+            if (event.key === "F4") {
                 this.setState({
                     selectedTextCommand: !this.state.selectedTextCommand,
                     saveTextCommand: !this.state.selectedTextCommand
@@ -53,41 +57,51 @@ export default class App extends Component {
                 event.preventDefault();
             }
 
-            // 1 - 8 to select predictions
-            if (event.keyCode - 48 >= 1 && event.keyCode - 48 <= 8) {
+            // 0 - 9 to write numbers
+            if (Number(event.key) >= 0 && Number(event.key) <= 9 && event.ctrlKey) {
+                // If ctrl is pressed print the number
                 event.preventDefault();
-                console.log(this.state);
+                insertTextInHtml(this.output, event.key);
+            }
+
+            // 1 - 8 to select predictions
+            if (Number(event.key) >= 1 && Number(event.key) <= 8 && !event.ctrlKey) {
+                event.preventDefault();
+                // Different menues
                 if (this.state.saveTextCommand) {
-                    if (this.output.current.innerText.length === 0) return;
+                    // In save command
+
+                    if (this.output.current.value.length === 0) return;
                     // Save command
                     const _preDefTexts = this.state.predefinedText;
-                    _preDefTexts[event.keyCode - 48 - 1] = this.output.current.innerText;
+                    _preDefTexts[Number(event.key) - 1] = this.output.current.value;
                     this.setState({predefinedText: _preDefTexts});
                     this.savePredefinedTexts();
-                    insertTextInHtmlRefAndSetCarret(this.output, 'Gespeichert');
+
+                    insertTextInHtml(this.output, 'Gespeichert', true);
+
                     const thiz = this;
                     setTimeout(() => {
-                        insertTextInHtmlRefAndSetCarret(this.output, '');
+                        insertTextInHtml(this.output, '', true);
                         thiz.setState({selectedTextCommand: false, saveTextCommand: false});
                     }, 1000);
                 } else if (this.state.selectedTextCommand) {
-                    const text = this.state.predefinedText[event.keyCode - 48 - 1];
+                    // In select Text to read command
+                    const text = this.state.predefinedText[Number(event.key) - 1];
                     if (text === undefined || text == null) return;
-                    insertTextInHtmlRefAndSetCarret(this.output, this.state.predefinedText[event.keyCode - 48 - 1]);
+                    insertTextInHtml(this.output, this.state.predefinedText[Number(event.key) - 1], false);
                     this.setState({selectedTextCommand: false, saveTextCommand: false});
                 } else {
                     // Normal select prediction
-                    this.prediction.current.selectPrediction(event.keyCode - 48);
+                    const word = this.prediction.current.selectPrediction(Number(event.key));
+                    insertTextInHtml(this.output, word, true);
                 }
             }
 
             // Tab remove all text
-            if (event.keyCode === 9) {
-                this.output.current.innerHTML = "";
-                // Call that the input changed so it rerenders the predictions
-                const e = new Event('input', {bubbles: true});
-                this.output.current.dispatchEvent(e);
+            if (event.key === "Tab") {
                 event.preventDefault();
+                insertTextInHtml(this.output, '', true);
             }
         });
 
@@ -118,7 +132,7 @@ export default class App extends Component {
     }
 
     speak() {
-        const text = this.output.current.innerText;
+        const text = this.output.current.value;
 
         if (text === undefined || text === null) {
             return;
@@ -156,10 +170,13 @@ export default class App extends Component {
 
                 </div>
 
-                <div
+                <textarea
                     // @ts-ignore
-                    tabIndex="0" className="in-out-text" id="in-out-text" ref={this.output}
-                    onInput={(e) => this.setState({text: e.currentTarget.innerText})} contentEditable={true}/>
+                    rows="1" tabIndex={0} className="in-out-text" id="in-out-text" ref={this.output}
+                    onChange={(e) => {
+                        this.setState({text: e.currentTarget.value});
+                        fitTextarea(e.currentTarget);
+                    }}/>
 
                 {!this.state.selectedTextCommand &&
                 <Prediction ref={this.prediction} text={this.state.text} textfield={this.output}/>}

@@ -1,20 +1,16 @@
 import {RefObject} from "react";
+import insertText from 'insert-text-textarea';
+import fitTextarea from "fit-textarea";
 
-export function insertTextInHtmlRefAndSetCarret(ref: RefObject<HTMLElement>, text: string) {
+export function insertTextInHtml(ref: RefObject<HTMLTextAreaElement>, text: string, full?: boolean) {
     const ele = ref.current;
 
-    ele.innerHTML = text;
-
-    // More the caret of the input div to the last position
-    const rng = document.createRange();
-    const sel = window.getSelection();
-    if (ele.innerHTML.length !== 0) {
-        rng.setStart(ele.childNodes[0], ele.innerHTML.length);
+    if(full) {
+        ele.select(); // The text needs to be selected so it will be replaced
     }
-    rng.collapse(true);
-    sel.removeAllRanges();
-    sel.addRange(rng);
-    ele.focus();
+
+    insertText(ele, text);
+    fitTextarea(ele);
 
     // Call that the input changed so it rerenders the predictions
     const event = new Event('input', {bubbles: true});

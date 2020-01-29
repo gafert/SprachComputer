@@ -1,7 +1,6 @@
 import React, {Component, RefObject} from 'react';
 import * as fs from 'fs';
 import words_de from './words_de';
-import {insertTextInHtmlRefAndSetCarret} from "./app/Util";
 
 const electron = require('electron');
 const configDir = (electron.app || electron.remote.app).getPath('home');
@@ -58,8 +57,8 @@ export default class Prediction extends Component<Props> {
      * Select 1-8 prediction
      * @param i Number of the prediciton
      */
-    public selectPrediction(i: number) {
-        this.select(this.state.suggestions[i - 1])
+    public selectPrediction(i: number): string {
+        return this.select(this.state.suggestions[i - 1])
     }
 
     /**
@@ -67,10 +66,9 @@ export default class Prediction extends Component<Props> {
      * @param word
      */
     private select(word) {
-        if (word === undefined || word === null) return;
-        insertTextInHtmlRefAndSetCarret(this.props.textfield,
-            this.predictionary.applyPrediction(this.props.textfield.current.innerHTML, word));
-        this.setState({suggestions: this.predictionary.predict(this.props.textfield.current.innerHTML)});
+        if (word === undefined || word === null) return this.props.textfield.current.value;
+        this.setState({suggestions: this.predictionary.predict(this.props.textfield.current.value)});
+        return this.predictionary.applyPrediction(this.props.textfield.current.value, word);
     }
 
     /**
